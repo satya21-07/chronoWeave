@@ -1,0 +1,11 @@
+# Ignore local dependency and build artifacts
+frontend/node_modules
+frontend/dist
+frontend/.angular
+backend/__pycache__
+__pycache__
+.git
+.gitignore
+Dockerfile
+render.yaml
+render-nginx.conf.template

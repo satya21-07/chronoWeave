@@ -53,6 +53,18 @@ Ensure you have Docker and Docker Compose installed.
 - **Email:** `demo@flowboard.io`
 - **Password:** `demo1234`
 
+### Render Deployment
+This repository includes a `render.yaml` and root `Dockerfile` so Render can deploy the full app as one service.
+
+1. Connect your GitHub account to Render.
+2. Import the `satya21-07/chronoWeave` repository.
+3. Render will detect `render.yaml` and create:
+   - one Docker web service using `Dockerfile`
+   - one managed PostgreSQL database
+4. The app will build the frontend, start the FastAPI backend, and proxy `/api` + `/ws` correctly.
+
+If Render asks for build settings, use the defaults from `render.yaml`.
+
 ### Development (Local)
 
 **Backend:**
