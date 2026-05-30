@@ -17,6 +17,6 @@ COPY backend ./backend
 COPY --from=frontend-builder /frontend/dist/chronoweave/browser /usr/share/nginx/html
 COPY render-nginx.conf.template /etc/nginx/conf.d/default.conf.template
 
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/backend
 EXPOSE 80
-CMD bash -lc "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 & nginx -g 'daemon off;'"
+CMD bash -lc "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && uvicorn app.main:app --host 127.0.0.1 --port 8000 & nginx -g 'daemon off;'"
