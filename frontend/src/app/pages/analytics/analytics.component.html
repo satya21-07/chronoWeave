@@ -1,0 +1,97 @@
+<!-- analytics.component.html
+     Analytics dashboard page for a selected project.
+     Displays KPI cards and ApexCharts visualizations. -->
+<div class="p-8 max-w-7xl mx-auto animate-fade-in pb-20">
+  <div class="flex items-center gap-4 mb-8">
+    <a [routerLink]="['/project', projectId]" class="p-2 glass-card hover:bg-dark-700/50 text-text-muted hover:text-white transition-colors rounded-xl">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-3xl font-bold text-white mb-1 tracking-tight">Project Analytics</h1>
+      <p class="text-text-secondary">{{ projectService.currentProject()?.title || 'Loading...' }}</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center py-20">
+      <div class="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+    </div>
+  } @else if (data) {
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="glass-card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-text-muted font-medium">Total Tasks</h3>
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white">{{ data.total_tasks }}</div>
+      </div>
+      
+      <div class="glass-card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-text-muted font-medium">Progress</h3>
+          <div class="w-10 h-10 rounded-lg bg-green-500/10 text-green-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white mb-2">{{ data.progress_percentage }}%</div>
+        <div class="progress-bar h-1.5"><div class="progress-fill !bg-green-500" [style.width.%]="data.progress_percentage"></div></div>
+      </div>
+      
+      <div class="glass-card p-6 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-text-muted font-medium">Blocked Tasks</h3>
+          <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-red-400">{{ data.blocked_tasks }}</div>
+      </div>
+      
+      <div class="glass-card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-text-muted font-medium">Critical Path</h3>
+          <div class="w-10 h-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+        </div>
+        <div class="text-3xl font-bold text-white">{{ data.critical_path_length }} <span class="text-sm font-normal text-text-muted">nodes</span></div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="glass-card p-6">
+        <h3 class="text-lg font-bold text-white mb-6">Status Distribution</h3>
+        <apx-chart
+          [series]="statusChartOptions.series!"
+          [chart]="statusChartOptions.chart!"
+          [labels]="statusChartOptions.labels!"
+          [colors]="statusChartOptions.colors!"
+          [stroke]="statusChartOptions.stroke!"
+          [legend]="statusChartOptions.legend!"
+          [tooltip]="statusChartOptions.tooltip!">
+        </apx-chart>
+      </div>
+      
+      <div class="glass-card p-6">
+        <h3 class="text-lg font-bold text-white mb-6">Weekly Completion</h3>
+        <apx-chart
+          [series]="lineChartOptions.series!"
+          [chart]="lineChartOptions.chart!"
+          [xaxis]="lineChartOptions.xaxis!"
+          [yaxis]="lineChartOptions.yaxis!"
+          [stroke]="lineChartOptions.stroke!"
+          [fill]="lineChartOptions.fill!"
+          [tooltip]="lineChartOptions.tooltip!"
+          [theme]="lineChartOptions.theme!"
+          [colors]="lineChartOptions.colors!">
+        </apx-chart>
+      </div>
+    </div>
+  }
+</div>

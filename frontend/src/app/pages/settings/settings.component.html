@@ -1,0 +1,96 @@
+<!-- settings.component.html -->
+<div class="p-8 max-w-4xl mx-auto animate-fade-in pb-20">
+  <h1 class="text-3xl font-bold text-white mb-8 tracking-tight">
+    Settings
+  </h1>
+
+  <div class="space-y-6">
+    
+    <!-- Profile Settings -->
+    <div class="glass-card overflow-hidden">
+      
+      <div class="p-6 border-b border-dark-700">
+        <h2 class="text-xl font-bold text-white mb-1">
+          Profile Information
+        </h2>
+
+        <p class="text-sm text-text-secondary">
+          Update your account's profile information and email address.
+        </p>
+      </div>
+
+      <div class="p-6 space-y-6">
+
+        <!-- Avatar -->
+        <div class="flex items-center gap-6">
+
+          <img
+            [src]="previewAvatar || authService.user()?.avatar"
+            class="w-20 h-20 rounded-full border-4 border-dark-800 shadow-xl object-cover"
+          >
+
+          <div>
+            <button
+              class="btn-secondary"
+              (click)="fileInput.click()"
+            >
+              Change Avatar
+            </button>
+
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              class="hidden"
+              (change)="onAvatarSelected($event)"
+            >
+          </div>
+
+        </div>
+
+        <!-- User Details -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              [value]="authService.user()?.name"
+              class="form-input"
+              disabled
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              [value]="authService.user()?.email"
+              class="form-input"
+              disabled
+            >
+          </div>
+
+        </div>
+
+        <!-- Logout -->
+        <div class="pt-4 border-t border-dark-700 flex justify-end">
+          <button
+            (click)="authService.logout()"
+            class="btn-danger"
+          >
+            Sign Out
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

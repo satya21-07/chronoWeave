@@ -1,0 +1,46 @@
+<!-- register.component.html
+     Registration page for creating a new user.
+     Contains a sign up form and link to the login page. -->
+<div class="min-h-screen bg-dark-950 flex items-center justify-center p-4 relative overflow-hidden">
+  <!-- Background effects -->
+  <div class="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[120px]"></div>
+  
+  <div class="glass-card w-full max-w-md p-8 relative z-10 animate-slide-in-up">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">Create an account</h1>
+      <p class="text-text-secondary">Join ChronoWeave to manage your projects</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-text-muted mb-1.5">Full Name</label>
+        <input type="text" name="name" [(ngModel)]="name" required class="form-input" placeholder="John Doe">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-text-muted mb-1.5">Email address</label>
+        <input type="email" name="email" [(ngModel)]="email" required class="form-input" placeholder="you@example.com">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-text-muted mb-1.5">Password</label>
+        <input type="password" name="password" [(ngModel)]="password" required minlength="6" class="form-input" placeholder="••••••••">
+        <p class="text-xs text-text-muted mt-1.5">Must be at least 6 characters long.</p>
+      </div>
+
+      <button type="submit" [disabled]="form.invalid || authService.loading()" class="btn-primary w-full py-3 text-base mt-2">
+        @if (authService.loading()) {
+          <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        } @else {
+          Create Account
+        }
+      </button>
+    </form>
+
+    <p class="mt-8 text-center text-sm text-text-muted">
+      Already have an account? 
+      <a routerLink="/login" class="font-medium text-indigo-400 hover:text-indigo-300">Sign in</a>
+    </p>
+  </div>
+</div>

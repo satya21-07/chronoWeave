@@ -1,0 +1,8 @@
+/* project-board.component.css
+   Styles for the project board page.
+   Keep graph and modal customizations scoped to this component. */
+
+   .task-bar{
+    max-height: 70vh;
+    overflow: auto;
+   }

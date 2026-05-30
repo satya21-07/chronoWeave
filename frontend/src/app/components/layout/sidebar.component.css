@@ -1,0 +1,329 @@
+/* sidebar.component.css
+   Sidebar-specific styles.
+   Add structure or scroll-behavior rules that apply only to the sidebar. */
+
+.sidebar {
+  width: 16rem;
+  min-width: 16rem;
+  transition: width 0.2s ease;
+}
+
+/* ensure absolute popover can position relative to the sidebar */
+.sidebar {
+  position: relative;
+}
+.sidebar.collapsed {
+  width: 5rem;
+  min-width: 5rem;
+}
+.sidebar > div.p-6 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed > div.p-6 {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+.sidebar.collapsed .p-4,
+.sidebar.collapsed .px-4 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.sidebar .sidebar-brand,
+.sidebar .sidebar-text,
+.sidebar .sidebar-link-text,
+.sidebar .sidebar-section-title {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.sidebar.collapsed .sidebar-brand,
+.sidebar.collapsed .sidebar-text,
+.sidebar.collapsed .sidebar-link-text,
+.sidebar.collapsed .sidebar-section-title,
+.sidebar.collapsed .brand-badge {
+  opacity: 0;
+  transform: scaleX(0);
+  display: none;
+}
+.sidebar .nav-item {
+  transition: justify-content 0.2s ease, padding 0.2s ease, gap 0.2s ease;
+}
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  min-height: 2.5rem;
+}
+
+/* When collapsed, allow nav children to show overflow (so buttons/icons aren't clipped) */
+/* .sidebar.collapsed nav {
+  overflow: visible;
+} */
+ .sidebar nav {
+  overflow: visible;
+}
+.sidebar.collapsed .nav-item svg {
+  margin: 0;
+}
+.sidebar.collapsed .nav-item .sidebar-link-text {
+  display: none;
+}
+.sidebar.collapsed .project-dot {
+  margin: 0;
+}
+.sidebar .sidebar-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9999px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  color: #cbd5e1;
+
+  transition: all 0.3s ease;
+}
+
+.sidebar .sidebar-toggle:hover {
+  background: rgba(99,102,241,0.18);
+  border-color: rgba(99,102,241,0.4);
+  color: white;
+  transform: scale(1.05);
+}
+.sidebar .sidebar-toggle svg {
+  transition: transform 0.2s ease;
+}
+.sidebar.collapsed .sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+.sidebar.collapsed .sidebar-text,
+.sidebar.collapsed .sidebar-link-text,
+.sidebar.collapsed .sidebar-section-title,
+.sidebar.collapsed .sidebar-brand {
+  pointer-events: none;
+}
+.sidebar.collapsed .sidebar-link-text {
+  white-space: nowrap;
+}
+.sidebar .sidebar-toggle svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+.sidebar.collapsed .nav-item:hover {
+  transform: translateX(2px);
+}
+.sidebar-header-content {
+  overflow: hidden;
+}
+/* Logo trigger */
+.sidebar-logo-trigger {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  width: 100%;
+
+  background: transparent;
+  border: none;
+
+  padding: 0.5rem;
+
+  border-radius: 0.75rem;
+
+  transition: background 0.2s ease;
+
+  overflow: hidden;
+}
+
+.sidebar-logo-trigger:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* Logo */
+.sidebar-logo-image {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+  flex-shrink: 0;
+
+  transition: opacity 0.2s ease;
+}
+
+/* Hover icon */
+.sidebar-hover-icon {
+  position: absolute;
+
+  left: 0.5rem;
+
+  width: 3rem;
+  height: 3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #cbd5e1;
+
+  opacity: 0;
+
+  transition: opacity 0.2s ease;
+}
+
+/* Hover behavior */
+.sidebar:not(.collapsed) .sidebar-logo-image {
+  opacity: 0;
+}
+
+.sidebar:not(.collapsed) .sidebar-hover-icon {
+  opacity: 1;
+}
+.sidebar.collapsed .sidebar-logo-image {
+  opacity: 1;
+}
+
+.sidebar.collapsed .sidebar-hover-icon {
+  opacity: 0;
+}
+
+.sidebar.collapsed .sidebar-logo-trigger:hover .sidebar-logo-image {
+  opacity: 0;
+}
+
+.sidebar.collapsed .sidebar-logo-trigger:hover .sidebar-hover-icon {
+  opacity: 1;
+}
+/* Brand text */
+.sidebar-brand {
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+/* Collapsed */
+.sidebar.collapsed {
+  width: 5rem;
+  min-width: 5rem;
+}
+
+/* Hide text when collapsed */
+.sidebar.collapsed .sidebar-brand {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+/* Center logo */
+.sidebar.collapsed .sidebar-logo-trigger {
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+/* Rotate icon */
+.sidebar-hover-icon svg {
+  transition: transform 0.25s ease;
+}
+
+.sidebar.collapsed .sidebar-hover-icon svg {
+  transform: rotate(180deg);
+}
+/* Collapsed projects button and popover */
+.collapsed-projects-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* border-radius: 0.625rem; */
+  z-index: 60;
+  background-color: rgba(15,23,42,0.85);
+  /* border: 1px solid rgba(55,65,81,0.5); */
+  color: #60a5fa; /* indigo-400 */
+}
+
+.sidebar.collapsed .collapsed-projects-btn {
+  margin: 0.25rem auto;
+}
+/* USER SECTION */
+.sidebar.collapsed .border-t .flex.items-center.gap-3 {
+  justify-content: center;
+  gap: 0;
+  padding:10px;
+}
+
+.sidebar.collapsed .border-t .flex-1 {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sidebar.collapsed .border-t img {
+  margin: 0 auto;
+}
+.collapsed-projects-btn svg,
+.collapsed-projects-btn svg path {
+  stroke: currentColor;
+  fill: none;
+}
+
+.projects-popover {
+  position: fixed !important;
+
+  left:63%;
+  top: 20%;
+transform: translateY(-10%);
+  width: 240px;
+
+  background: rgba(15, 23, 42, 0.98);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  border-radius: 16px;
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.45);
+
+  overflow: hidden;
+
+  z-index: 999999;
+
+  animation: popIn 0.18s ease;
+}
+.sidebar {
+  overflow: visible;
+}
+.projects-popover a {
+  display: block;
+}
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

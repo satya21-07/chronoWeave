@@ -1,0 +1,157 @@
+<!-- project-board.component.html
+     Main board for project task management and dependency visualization.
+     Contains toolbar, graph view, task sidebar, and create task modal. -->
+<div class="h-full flex flex-col">
+  <!-- Toolbar -->
+  <div class="h-14 glass-card border-x-0 border-t-0 rounded-none bg-dark-900/60 flex items-center justify-between px-6 z-10">
+    <div class="flex items-center gap-4">
+      @if (projectService.currentProject()) {
+        <h1 class="text-lg font-bold text-white">{{ projectService.currentProject()?.title }}</h1>
+        <div class="w-px h-5 bg-dark-700"></div>
+        <a [routerLink]="['/project', projectId, 'analytics']" class="text-sm font-medium text-text-secondary hover:text-indigo-400 transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Analytics
+        </a>
+      }
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <div class="flex -space-x-2 mr-4">
+        <!-- Simulated active users in room -->
+        <img class="w-8 h-8 rounded-full border-2 border-dark-900 z-10 relative" src="https://api.dicebear.com/7.x/initials/svg?seed=U1" alt="">
+        <div class="w-8 h-8 rounded-full border-2 border-dark-900 bg-dark-700 flex items-center justify-center text-xs text-white z-0 relative">+2</div>
+      </div>
+      <button (click)="toggleTheme()" class="btn-secondary !p-2 !rounded-full mr-2" title="Toggle Theme">
+        @if (isDarkTheme) {
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        } @else {
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        }
+      </button>
+      <button (click)="isCreateModalOpen = true" class="btn-primary py-2 text-sm">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Task
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <div class="flex-1 relative overflow-hidden flex">
+    <!-- Graph Area -->
+    <div class="flex-1 relative">
+      @if (taskService.loading() && taskService.tasks().length === 0) {
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+        </div>
+      } @else {
+        <app-dependency-graph
+          [tasks]="taskService.tasks()"
+          [criticalPath]="taskService.criticalPath()"
+          (taskSelected)="onTaskSelected($event)"
+          (createDependency)="onCreateDependency($event)">
+        </app-dependency-graph>
+      }
+    </div>
+
+    <!-- Task Details Sidebar -->
+    @if (taskService.selectedTask()) {
+      <div class="absolute top-0 right-0 h-full z-30">
+        <app-task-details 
+          [task]="taskService.selectedTask()!"
+          (close)="taskService.selectTask(null)">
+        </app-task-details>
+      </div>
+    }
+  </div>
+
+  <!-- Create Task Modal -->
+  @if (isCreateModalOpen) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm animate-fade-in">
+      <div class="glass-card task-bar w-full max-w-lg p-6 relative animate-slide-in-up border-indigo-500/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-white">Create New Task</h2>
+          <button (click)="isCreateModalOpen = false" class="text-text-muted hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <form (ngSubmit)="createTask()" #form="ngForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">Task Title</label>
+            <input type="text" name="title" [(ngModel)]="newTask.title" required class="form-input" placeholder="e.g. Design Database Schema">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">Description (Optional)</label>
+            <textarea name="description" [(ngModel)]="newTask.description" class="form-input min-h-[60px]" placeholder="Explain the task properly..."></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">Assign To (Optional)</label>
+            <select name="assigned_user" [(ngModel)]="newTask.assigned_user" class="form-select">
+              <option [ngValue]="null">Unassigned</option>
+              @for (user of authService.users(); track user.id) {
+                <option [value]="user.id">{{ user.name }} ({{ user.email }})</option>
+              }
+            </select>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-text-muted mb-1.5">Priority</label>
+              <select name="priority" [(ngModel)]="newTask.priority" class="form-select">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-text-muted mb-1.5">Est. Hours (Optional)</label>
+              <input type="number" name="estimated_hours" [(ngModel)]="newTask.estimated_hours" class="form-input">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">Subtasks (Optional)</label>
+            <div *ngFor="let s of newTask.subtasks; let i = index; trackBy: trackBySubtask" class="flex items-center gap-2 mb-2">
+              <input type="text" name="subtask-{{s.id}}" [(ngModel)]="s.title" class="form-input flex-1" placeholder="Subtask title">
+              <button type="button" (click)="removeSubtask(i)" class="btn-secondary px-2">Remove</button>
+            </div>
+            <div class="flex flex-col">
+              <button type="button" (click)="addSubtask()" class="btn-secondary">Add Subtask</button>
+              <p class="text-xs text-text-muted mt-2">Add subtasks which will appear as checklist on the task node.</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-text-muted mb-1.5">Depends On (Optional)</label>
+            <select name="dependencies" [(ngModel)]="newTask.dependency_ids" multiple class="form-select h-24">
+              @for (task of taskService.tasks(); track task.id) {
+                <option [value]="task.id">{{ task.title }}</option>
+              }
+            </select>
+            <p class="text-xs text-text-muted mt-1">Hold Ctrl/Cmd to select multiple dependencies.</p>
+          </div>
+          
+          <div class="flex justify-end gap-3 mt-6">
+            <button type="button" (click)="isCreateModalOpen = false" class="btn-secondary">Cancel</button>
+            <button type="submit" [disabled]="form.invalid || isSubmitting" class="btn-primary">
+              {{ isSubmitting ? 'Creating...' : 'Create Task' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

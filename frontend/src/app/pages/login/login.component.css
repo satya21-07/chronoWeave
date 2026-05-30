@@ -1,0 +1,32 @@
+/* login.component.css
+    Authentication page styles.
+    Add login-specific form styling and responsive layout helpers here. */
+
+/* Poster / layout for login page */
+.login-page { }
+
+/* Poster column styles */
+.poster-column { 
+   min-height: 520px;
+   background-image: url('../../../assets/chronoweave_poster.png');
+   background-size: cover;
+   background-position: center;
+   position: relative;
+}
+.poster-overlay {
+   display:flex;
+   flex-direction:column;
+   justify-content:center;
+   align-items:flex-start;
+   padding:48px;
+   height:100%;
+   color:var(--text-on-dark, #e6f7ff);
+   background: linear-gradient(90deg, rgba(2,6,23,0.45), rgba(2,6,23,0.15));
+}
+.poster-logo { width:64px; height:64px; }
+.poster-title { font-size:28px; font-weight:700; margin-top:12px; }
+.poster-sub { margin-top:8px; color:rgba(255,255,255,0.8); max-width:320px; }
+
+@media (max-width: 1024px) {
+   .poster-column { display:none; }
+}

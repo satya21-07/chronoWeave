@@ -1,0 +1,101 @@
+<!-- dashboard.component.html
+     Dashboard page displaying user projects and the create project modal.
+     Includes empty state and loading state handling. -->
+<div class="p-8 max-w-7xl mx-auto animate-fade-in">
+  <div class="flex justify-between items-end mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">Dashboard</h1>
+      <p class="text-text-secondary">Welcome back, {{ authService.user()?.name }}!</p>
+    </div>
+    <button (click)="isCreateModalOpen = true" class="btn-primary">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      New Project
+    </button>
+  </div>
+
+  @if (projectService.loading()) {
+    <div class="flex justify-center py-20">
+      <div class="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+    </div>
+  } @else if (projectService.projects().length === 0) {
+    <div class="glass-card flex flex-col items-center justify-center py-20 px-4 text-center border-dashed">
+      <div class="w-16 h-16 bg-dark-700/50 rounded-full flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold text-white mb-2">No projects yet</h3>
+          <p class="text-text-secondary max-w-md mb-6">Create your first project to start mapping out tasks and dependencies on the ChronoWeave canvas.</p>
+      <button (click)="isCreateModalOpen = true" class="btn-primary">Create Project</button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      @for (project of projectService.projects(); track project.id) {
+        <a [routerLink]="['/project', project.id]" class="glass-card p-6 group cursor-pointer block h-full">
+          <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <button (click)="$event.preventDefault(); deleteProject(project.id)" class="text-text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity p-1">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+          
+          <h3 class="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{{ project.title }}</h3>
+          <p class="text-sm text-text-secondary line-clamp-2 mb-6">{{ project.description || 'No description provided.' }}</p>
+          
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-dark-700/50">
+            <div class="text-sm text-text-muted flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              {{ project.task_count }} Tasks
+            </div>
+            <div class="text-xs text-text-muted">
+              {{ project.created_at | date:'MMM d, y' }}
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>
+
+<!-- Create Project Modal -->
+@if (isCreateModalOpen) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-950/80 backdrop-blur-sm animate-fade-in">
+    <div class="glass-card w-full max-w-lg p-6 relative animate-slide-in-up border-indigo-500/30">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-white">Create New Project</h2>
+        <button (click)="isCreateModalOpen = false" class="text-text-muted hover:text-white">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <form (ngSubmit)="createProject()" #form="ngForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-text-muted mb-1.5">Project Title</label>
+          <input type="text" name="title" [(ngModel)]="newProject.title" required class="form-input" placeholder="e.g. E-Commerce Platform">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-text-muted mb-1.5">Description (Optional)</label>
+          <textarea name="description" [(ngModel)]="newProject.description" class="form-textarea" placeholder="Briefly describe the project goals..."></textarea>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" (click)="isCreateModalOpen = false" class="btn-secondary">Cancel</button>
+          <button type="submit" [disabled]="form.invalid || isSubmitting" class="btn-primary">
+            {{ isSubmitting ? 'Creating...' : 'Create Project' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,61 @@
+<!-- login.component.html
+     Login page for user authentication.
+     Includes form fields and background visual effects. -->
+<div class="min-h-screen bg-dark-950 flex items-center justify-center p-4 relative overflow-hidden login-page">
+  <div
+    class="glass-card w-full max-w-6xl overflow-hidden rounded-[32px] shadow-2xl animate-slide-in-up grid grid-cols-1 lg:grid-cols-[1.25fr_1fr]">
+    <!-- Poster / Branding column -->
+    <aside class="hidden lg:flex poster-column overflow-hidden border-r border-white/10">
+      <div class="poster-overlay">
+        <!-- <img src="assets/chronoweave_logo.png" alt="ChronoWeave" class="poster-logo"> -->
+      </div>
+    </aside>
+
+    <!-- Login form panel -->
+    <div class="login-panel px-8 py-10 lg:px-12 lg:py-14 bg-dark-950">
+      <div class="text-center lg:text-left">
+        <div class="flex items-center justify-center mb-4">
+          <img src="assets/chronoweave_logo.png" alt="ChronoWeave" class="w-52 object-contain">
+        </div>
+        <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">Welcome back</h1>
+        <p class="text-text-secondary">Sign in to your ChronoWeave account</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" #form="ngForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-text-muted mb-1.5">Email address</label>
+          <input type="email" name="email" [(ngModel)]="email" required class="form-input"
+            placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-text-muted mb-1.5">Password</label>
+          <input type="password" name="password" [(ngModel)]="password" required class="form-input"
+            placeholder="••••••••">
+        </div>
+
+        <div class="flex items-center justify-between mt-2 mb-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="rounded bg-dark-800 border-dark-700 text-indigo-500 focus:ring-indigo-500/30">
+            <span class="text-sm text-text-muted">Remember me</span>
+          </label>
+          <a href="#" class="text-sm font-medium text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+        </div>
+
+        <button type="submit" [disabled]="form.invalid || authService.loading()"
+          class="btn-primary w-full py-3 text-base">
+          @if (authService.loading()) {
+          <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          } @else {
+          Sign In
+          }
+        </button>
+      </form>
+
+      <p class="mt-8 text-center lg:text-left text-sm text-text-muted">
+        Don't have an account?
+        <a routerLink="/register" class="font-medium text-indigo-400 hover:text-indigo-300">Create an account</a>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "chronoweave": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "css",
+          "standalone": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/chronoweave",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+                "src/favicon.ico",
+                "src/assets"
+              ],
+            "styles": ["src/styles.css"],
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "apexcharts",
+              "d3-array",
+              "d3-axis",
+              "d3-brush",
+              "d3-chord",
+              "d3-color",
+              "d3-contour",
+              "d3-delaunay",
+              "d3-dispatch",
+              "d3-drag",
+              "d3-dsv",
+              "d3-ease",
+              "d3-fetch",
+              "d3-force",
+              "d3-format",
+              "d3-geo",
+              "d3-hierarchy",
+              "d3-interpolate",
+              "d3-path",
+              "d3-polygon",
+              "d3-quadtree",
+              "d3-random",
+              "d3-scale",
+              "d3-scale-chromatic",
+              "d3-selection",
+              "d3-shape",
+              "d3-time",
+              "d3-time-format",
+              "d3-timer",
+              "d3-transition",
+              "d3-zoom"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                { "type": "initial", "maximumWarning": "2mb", "maximumError": "5mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "10kb", "maximumError": "20kb" }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": { "buildTarget": "chronoweave:build:production" },
+            "development": { "buildTarget": "chronoweave:build:development" }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
