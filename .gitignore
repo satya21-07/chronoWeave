@@ -20,6 +20,7 @@ pnpm-debug.log*
 
 # Angular builds
 frontend/dist/
+frontend/.angular/
 
 # IDEs and OS
 .vscode/
