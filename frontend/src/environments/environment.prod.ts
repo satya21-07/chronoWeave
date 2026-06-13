@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
-  wsUrl: '/ws',
+  apiUrl: 'https://chronoweave.onrender.com/api',
+  wsUrl: 'wss://chronoweave.onrender.com/ws',
 };

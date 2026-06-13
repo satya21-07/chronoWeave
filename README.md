@@ -65,6 +65,18 @@ This repository includes a `render.yaml` and root `Dockerfile` so Render can dep
 
 If Render asks for build settings, use the defaults from `render.yaml`.
 
+### Vercel Deployment
+
+This repository also supports deploying the frontend to Vercel as a static site.
+
+1. Keep the backend hosted separately (for example, on Render at `https://chronoweave.onrender.com`).
+2. Make sure the Vercel project is connected to this repository and uses the root `vercel.json` file.
+3. Vercel will build the Angular app from `frontend/package.json` and serve the files from `frontend/dist/chronoweave/browser`.
+
+The production frontend is configured to call the backend at:
+- `https://chronoweave.onrender.com/api`
+- `wss://chronoweave.onrender.com/ws`
+
 ### Development (Local)
 
 **Backend:**
