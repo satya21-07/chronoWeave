@@ -6,8 +6,7 @@ from sqlalchemy import (
     ForeignKey, Enum as SQLEnum, Table, Index, Boolean
 )
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
-from app.database import Base
+from app.database import Base, GUID
 
 
 class TaskStatus(str, enum.Enum):
@@ -27,7 +26,7 @@ class TaskPriority(str, enum.Enum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     name = Column(String(100), nullable=False)
     email = Column(String(255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
@@ -40,10 +39,10 @@ class User(Base):
 class Project(Base):
     __tablename__ = "projects"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_by = Column(GUID(), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     creator = relationship("User", back_populates="projects")
@@ -54,16 +53,16 @@ class Project(Base):
 task_dependencies = Table(
     "task_dependencies",
     Base.metadata,
-    Column("task_id", UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True),
-    Column("depends_on_id", UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True),
+    Column("task_id", GUID(), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True),
+    Column("depends_on_id", GUID(), ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True),
 )
 
 
 class Task(Base):
     __tablename__ = "tasks"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    project_id = Column(GUID(), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
     status = Column(SQLEnum(TaskStatus), default=TaskStatus.NOT_STARTED, index=True)
@@ -71,7 +70,7 @@ class Task(Base):
     progress = Column(Integer, default=0)
     due_date = Column(DateTime, nullable=True)
     estimated_hours = Column(Float, nullable=True)
-    assigned_user = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    assigned_user = Column(GUID(), ForeignKey("users.id"), nullable=True)
     position_x = Column(Float, default=0.0)
     position_y = Column(Float, default=0.0)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -103,8 +102,8 @@ class Task(Base):
 class Subtask(Base):
     __tablename__ = "subtasks"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    task_id = Column(UUID(as_uuid=True), ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    task_id = Column(GUID(), ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False, index=True)
     title = Column(String(200), nullable=False)
     completed = Column(Boolean, default=False)
     order = Column(Integer, default=0)
