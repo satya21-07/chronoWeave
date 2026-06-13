@@ -73,9 +73,9 @@ This repository also supports deploying the frontend to Vercel as a static site.
 2. Make sure the Vercel project is connected to this repository and uses the root `vercel.json` file.
 3. Vercel will build the Angular app from `frontend/package.json` and serve the files from `frontend/dist/chronoweave/browser`.
 
-The production frontend is configured to call the backend at:
-- `https://chronoweave.onrender.com/api`
-- `wss://chronoweave.onrender.com/ws`
+The production frontend is configured to call the backend on the same origin:
+- `/api`
+- `/ws`
 
 ### Development (Local)
 
