@@ -16,7 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend ./backend
 COPY --from=frontend-builder /frontend/dist/chronoweave/browser /usr/share/nginx/html
 COPY render-nginx.conf.template /etc/nginx/conf.d/default.conf.template
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV PYTHONPATH=/app/backend
 EXPOSE 80
-CMD bash -lc "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && uvicorn app.main:app --host 127.0.0.1 --port 8000 & nginx -g 'daemon off;'"
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
