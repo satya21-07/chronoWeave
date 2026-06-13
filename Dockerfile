@@ -8,7 +8,7 @@ RUN npm run build -- --configuration production
 
 # Final image with backend and nginx
 FROM python:3.11-slim
-RUN apt-get update && apt-get install -y nginx gettext-base && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y nginx gettext-base && rm -rf /var/lib/apt/lists/* && rm -f /etc/nginx/sites-enabled/default
 WORKDIR /app
 
 COPY backend/requirements.txt ./
