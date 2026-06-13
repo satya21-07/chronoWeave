@@ -7,14 +7,26 @@ from app.database import engine, Base
 from app.routes import auth, projects, tasks, dependencies, analytics
 from app.websocket_manager import websocket_endpoint
 from app.seed import seed_data
+from sqlalchemy.engine.url import make_url
+import logging
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create tables on startup
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    await seed_data()
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        await seed_data()
+    except Exception as exc:
+        # Try to provide a clear diagnostic in logs for Render
+        try:
+            url = make_url(str(app.state.settings.DATABASE_URL)) if hasattr(app, "state") and getattr(app.state, "settings", None) else make_url("" if not hasattr(__import__("app.config"), "settings") else __import__("app.config").settings.DATABASE_URL)
+            host = url.host
+        except Exception:
+            host = None
+        logging.exception("Database connection failed. Attempted host: %s. Error: %s", host, exc)
+        raise
     yield
     await engine.dispose()
 
