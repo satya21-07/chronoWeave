@@ -102,5 +102,3 @@ Frontend will be at `http://localhost:4200`.
 - **State Management:** Fully reactive UI using Angular Signals for local state (`AuthService`, `ProjectService`, `TaskService`).
 - **Graph Algorithm:** DFS cycle detection runs on the backend prior to dependency insertion. Topological Sort and DP compute the critical path.
 - **Component Design:** Clean module isolation and atomic component structure following Angular 17 best practices.
-
-*Built with passion by Antigravity.*
