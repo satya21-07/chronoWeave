@@ -3,26 +3,30 @@
      Includes D3 SVG container, help panel, and toolbar controls. -->
 <div class="w-full h-full relative overflow-hidden bg-dark-950">
   <!-- Grid Background -->
-  <div class="absolute inset-0 z-0 opacity-20 pointer-events-none" 
-       style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;">
+  <div class="absolute inset-0 z-0 opacity-20 pointer-events-none"
+    style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0); background-size: 40px 40px;">
   </div>
-  
+
   <!-- D3 SVG Container -->
   <svg class="w-full h-full relative z-10" #svgContainer></svg>
-  
+
   <!-- Help Guide Panel -->
-  <div *ngIf="isHelpOpen" class="absolute bottom-20 right-6 z-30 glass-card p-5 max-w-sm rounded-xl border border-indigo-500/30 bg-dark-950/95 shadow-2xl animate-fade-in text-white text-sm">
+  <div *ngIf="isHelpOpen"
+    class="absolute bottom-20 right-6 z-30 glass-card p-5 max-w-sm rounded-xl border border-indigo-500/30 bg-dark-950/95 shadow-2xl animate-fade-in text-white text-sm">
     <div class="flex justify-between items-center mb-3">
       <div class="flex items-center gap-2">
         <span class="p-1 rounded-lg bg-indigo-500/20 text-indigo-400">
           <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
         </span>
         <h3 class="font-semibold text-white">How to Draw Dependencies</h3>
       </div>
       <button (click)="isHelpOpen = false" class="text-text-muted hover:text-white transition-colors">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </div>
     <div class="space-y-3 text-text-secondary text-xs leading-relaxed">
@@ -34,7 +38,9 @@
           <span class="w-2.5 h-2.5 rounded-full border border-indigo-400/50"></span>
         </div>
         <div>
-          <span class="text-indigo-400 font-medium">Link Tasks:</span> Hover over a task. A blue connection dot will appear at its bottom. <strong>Click and drag</strong> from this dot, then <strong>drop it</strong> anywhere on the top half of the dependent task.
+          <span class="text-indigo-400 font-medium">Link Tasks:</span> Hover over a task. A blue connection dot will
+          appear at its bottom. <strong>Click and drag</strong> from this dot, then <strong>drop it</strong> anywhere on
+          the top half of the dependent task.
         </div>
       </div>
       <div class="space-y-1.5 pl-1">
@@ -49,12 +55,18 @@
         <div class="mt-2 pt-2 border-t border-dark-800">
           <span class="text-indigo-400 font-medium block mb-1">Color Legend:</span>
           <div class="grid grid-cols-2 gap-y-2 text-[11px]">
-            <div class="flex items-center gap-2"><span class="w-3 h-0.5 bg-red-500"></span> Red Link: Critical Path</div>
-            <div class="flex items-center gap-2"><span class="w-3 h-0.5 bg-[#4a4a6a]"></span> Gray Link: Normal Link</div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-emerald-500"></span> Green Node: Completed</div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-amber-500"></span> Yellow Node: In Progress</div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-red-500"></span> Red Node: Blocked</div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-[#6b6b8a]"></span> Gray Node: Not Started</div>
+            <div class="flex items-center gap-2"><span class="w-3 h-0.5 bg-red-500"></span> Red Link: Critical Path
+            </div>
+            <div class="flex items-center gap-2"><span class="w-3 h-0.5 bg-[#4a4a6a]"></span> Gray Link: Normal Link
+            </div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-emerald-500"></span>
+              Green Node: Completed</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-amber-500"></span>
+              Yellow Node: In Progress</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-red-500"></span> Red
+              Node: Blocked</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full border border-[#6b6b8a]"></span> Gray
+              Node: Not Started</div>
           </div>
         </div>
       </div>
@@ -62,21 +74,35 @@
   </div>
 
   <!-- Toolbar -->
-  <div class="absolute bottom-6 right-6 z-20 glass-card p-2 flex gap-2 rounded-xl border-dark-700 bg-dark-900/90 shadow-2xl">
-    <button (click)="zoomIn()" class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Zoom In">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    </button>
-    <button (click)="zoomOut()" class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Zoom Out">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-    </button>
-    <div class="w-px h-6 bg-dark-700 self-center mx-1"></div>
-    <button (click)="resetZoom()" class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Fit to Screen">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-    </button>
-    <div class="w-px h-6 bg-dark-700 self-center mx-1"></div>
-    <button (click)="toggleHelp()" [class.text-indigo-400]="isHelpOpen" class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-indigo-400 transition-colors" title="How to Draw Dependencies">
+  <div
+    class="absolute top-6 right-6 z-20 glass-card p-2 flex gap-2 rounded-xl border-dark-700 bg-dark-900/90 shadow-2xl">
+    <button (click)="zoomIn()"
+      class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Zoom In">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+    </button>
+    <button (click)="zoomOut()"
+      class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Zoom Out">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+      </svg>
+    </button>
+    <div class="w-px h-6 bg-dark-700 self-center mx-1"></div>
+    <button (click)="resetZoom()"
+      class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-white transition-colors" title="Fit to Screen">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+      </svg>
+    </button>
+    <div class="w-px h-6 bg-dark-700 self-center mx-1"></div>
+    <button (click)="toggleHelp()" [class.text-indigo-400]="isHelpOpen"
+      class="p-2 hover:bg-dark-700 rounded-lg text-text-muted hover:text-indigo-400 transition-colors"
+      title="How to Draw Dependencies">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </button>
   </div>

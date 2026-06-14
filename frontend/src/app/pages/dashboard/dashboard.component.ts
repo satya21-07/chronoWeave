@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../services/project.service';
 import { AuthService } from '../../services/auth.service';
+import { AiService, AiProjectCreateResponse } from '../../services/ai.service';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
@@ -20,6 +21,8 @@ export class DashboardComponent implements OnInit {
    */
   projectService = inject(ProjectService);
   authService = inject(AuthService);
+  aiService = inject(AiService);
+  router = inject(Router);
   private toastService = inject(ToastService);
 
   isCreateModalOpen = false;

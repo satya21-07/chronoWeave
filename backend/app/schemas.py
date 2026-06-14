@@ -55,7 +55,6 @@ class ProjectResponse(BaseModel):
         from_attributes = True
 
 
-# ── Task Schemas ──────────────────────────────────────────────
 class SubtaskCreate(BaseModel):
     id: Optional[UUID] = None  # If provided, this is an existing subtask to update
     title: str = Field(..., min_length=1, max_length=200)
@@ -63,6 +62,49 @@ class SubtaskCreate(BaseModel):
     order: Optional[int] = 0
 
 
+class AiTaskSchema(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = None
+    status: Optional[str] = "NOT_STARTED"
+    priority: Optional[str] = "MEDIUM"
+    estimated_hours: Optional[float] = None
+    assigned_user: Optional[UUID] = None
+    subtasks: Optional[List[SubtaskCreate]] = None
+    depends_on: Optional[List[str]] = None
+
+
+class AiProjectSchema(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = None
+    tasks: List[AiTaskSchema] = []
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class AiProjectRequest(BaseModel):
+    prompt: str = Field(..., min_length=5)
+    history: List[ChatMessage] = []
+    create_project: bool = True
+    project_id: Optional[UUID] = None
+
+
+class AiProjectResponse(BaseModel):
+    project_id: UUID
+    title: str
+    description: Optional[str] = None
+    task_count: int
+    tasks: List["TaskResponse"]
+    raw_schema: dict
+    message: str
+
+    class Config:
+        from_attributes = True
+
+
+# ── Task Schemas ──────────────────────────────────────────────
 class TaskCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None

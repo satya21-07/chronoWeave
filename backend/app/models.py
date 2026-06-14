@@ -2,7 +2,7 @@ import uuid
 import enum
 from datetime import datetime
 from sqlalchemy import (
-    Column, String, Text, Integer, Float, DateTime,
+    Column, String, Text, Integer, Float, DateTime, JSON,
     ForeignKey, Enum as SQLEnum, Table, Index, Boolean
 )
 from sqlalchemy.orm import relationship
@@ -44,6 +44,7 @@ class Project(Base):
     description = Column(Text, nullable=True)
     created_by = Column(GUID(), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    ai_chat_history = Column(JSON, nullable=True)
 
     creator = relationship("User", back_populates="projects")
     tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")

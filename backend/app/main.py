@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.database import engine, Base
 from app.database import switch_to_sqlite_fallback
-from app.routes import auth, projects, tasks, dependencies, analytics
+from app.routes import auth, projects, tasks, dependencies, analytics, ai
 from app.websocket_manager import websocket_endpoint
 from app.seed import seed_data
 import logging
@@ -73,6 +73,7 @@ app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(tasks.router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(dependencies.router, prefix="/api/dependencies", tags=["Dependencies"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
 
 # WebSocket
 app.add_api_websocket_route("/ws/{project_id}", websocket_endpoint)

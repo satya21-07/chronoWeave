@@ -7,13 +7,16 @@
       <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">Dashboard</h1>
       <p class="text-text-secondary">Welcome back, {{ authService.user()?.name }}!</p>
     </div>
-    <button (click)="isCreateModalOpen = true" class="btn-primary">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-      New Project
-    </button>
+    <div class="flex gap-3">
+      <button (click)="isCreateModalOpen = true" class="btn-primary">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Project
+      </button>
+    </div>
   </div>
+
 
   @if (projectService.loading()) {
     <div class="flex justify-center py-20">

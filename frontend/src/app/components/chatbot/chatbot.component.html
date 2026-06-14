@@ -1,0 +1,82 @@
+<div class="fixed bottom-6 right-6 z-50">
+  <!-- Chat toggle button -->
+  <button (click)="toggleChat()"
+    class="w-14 h-14 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105 active:scale-95 group">
+    <svg *ngIf="!isOpen" class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+    <svg *ngIf="isOpen" class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <!-- Chat window -->
+  <div *ngIf="isOpen"
+    class="absolute bottom-20 right-0 w-80 sm:w-96 glass-card border border-indigo-500/30 flex flex-col shadow-2xl animate-slide-in-up origin-bottom-right"
+    style="height: 500px; max-height: calc(100vh - 120px);">
+    <!-- Header -->
+    <div
+      class="bg-indigo-600/90 backdrop-blur text-white px-4 py-3 border-b border-indigo-500/30 flex justify-between items-center rounded-t-xl shadow-md">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <h3 class="font-bold tracking-wide">AI Project Assistant</h3>
+      </div>
+      <div class="flex items-center gap-3">
+        <button *ngIf="currentProjectId" (click)="startNewProject()"
+          class="text-xs font-medium bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-100 hover:text-white px-3 py-1.5 rounded-lg border border-indigo-500/30 transition-all flex items-center gap-1 shadow-sm"
+          title="Start a completely new project">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          New Project
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div #chatContainer class="flex-1 overflow-y-auto p-4 space-y-4 bg-dark-900/50">
+      <ng-container *ngFor="let msg of messages">
+        <div class="flex" [ngClass]="msg.role === 'user' ? 'justify-end' : 'justify-start'">
+          <div class="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-md"
+            [ngClass]="msg.role === 'user' ? 'bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-br-sm' : 'bg-dark-800 text-text-primary border border-dark-600 rounded-bl-sm'">
+            <div class="flex items-center gap-2 h-5" *ngIf="msg.isGenerating">
+              <div class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
+              <div class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+              <div class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+            <p *ngIf="!msg.isGenerating" class="whitespace-pre-wrap leading-relaxed">{{ msg.content }}</p>
+
+            <a *ngIf="msg.projectId" [routerLink]="['/project', msg.projectId]" (click)="toggleChat()"
+              class="inline-flex items-center gap-1 mt-3 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 rounded-lg text-indigo-400 hover:text-indigo-300 font-medium transition-all">
+              View Project Board
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Input -->
+    <div class="p-3 bg-dark-800 rounded-b-xl border-t border-dark-700 shadow-inner">
+      <form (ngSubmit)="sendMessage()" class="flex gap-2">
+        <input type="text" [(ngModel)]="userInput" name="message" placeholder="e.g. Create a new CRM app..."
+          class="flex-1 bg-dark-950 border border-dark-600 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-text-muted"
+          [disabled]="isTyping" autocomplete="off" />
+        <button type="submit" [disabled]="isTyping || !userInput.trim()"
+          class="bg-indigo-600 text-white rounded-xl px-3 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
