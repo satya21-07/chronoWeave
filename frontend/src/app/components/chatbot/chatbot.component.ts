@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AiService } from '../../services/ai.service';
 import { ToastService } from '../../services/toast.service';
 
@@ -36,17 +36,27 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   @ViewChild('chatContainer') chatContainer!: ElementRef;
 
   private subscription: any;
+  private routerSubscription: any;
 
   ngOnInit() {
     this.subscription = this.aiService.openChatbotNewProject$.subscribe(() => {
       this.isOpen = true;
       this.startNewProject();
     });
+
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.checkCurrentProject();
+      }
+    });
   }
 
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 
@@ -63,9 +73,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     if (match && match[1]) {
       const newProjectId = match[1];
       if (this.currentProjectId !== newProjectId) {
-        if (this.forceNewProject) {
-          return;
-        }
+        this.forceNewProject = false;
         this.currentProjectId = newProjectId;
         this.loadHistory();
       }

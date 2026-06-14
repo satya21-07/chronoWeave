@@ -76,16 +76,7 @@
             d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
         </svg>
       </button>
-      @if (isCollapsed && showCollapsedProjects) {
-      <div class="projects-popover">
-        <div class="py-2">
-          @for (project of projectService.projects(); track project.id) {
-          <a [routerLink]="['/project', project.id]"
-            class="block px-3 py-2 text-sm font-medium text-text-secondary hover:bg-dark-700/30">{{ project.title }}</a>
-          }
-        </div>
-      </div>
-      }
+      <!-- Popover moved outside aside to prevent CSS clipping -->
     </div>
     } @else {
     <div class="project-links">
@@ -163,3 +154,24 @@
     </div>
   </div>
 </div>
+
+<!-- Moved out of <aside> to escape backdrop-filter clipping -->
+@if (isCollapsed && showCollapsedProjects && !projectService.loading()) {
+<div class="projects-popover">
+  <div class="px-3 py-2 border-b border-dark-700/50 bg-dark-900/50 flex items-center gap-2">
+    <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span class="text-xs font-semibold text-text-muted uppercase tracking-wider">Recents</span>
+  </div>
+  <div class="py-1 projects-popover-list">
+    @for (project of projectService.projects(); track project.id) {
+    <a [routerLink]="['/project', project.id]"
+      class="block px-3 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-dark-700/50 transition-colors">{{ project.title }}</a>
+    }
+    @if (projectService.projects().length === 0) {
+      <div class="px-3 py-3 text-sm text-text-muted italic text-center">No projects found</div>
+    }
+  </div>
+</div>
+}

@@ -53,7 +53,7 @@ def _extract_json_payload(raw_text: Any) -> Dict[str, Any]:
         raise ValueError(f"Unable to parse AI response as JSON: {exc}") from exc
 
 
-async def _call_groq_api(prompt: str, history: List[Any] = None) -> Dict[str, Any]:
+async def _call_groq_api(prompt: str, history: List[Any] = None, current_state: str = None) -> Dict[str, Any]:
     import logging
 
     if not settings.GROQ_API_KEY:
@@ -79,13 +79,19 @@ async def _call_groq_api(prompt: str, history: List[Any] = None) -> Dict[str, An
             content = msg.content if hasattr(msg, "content") else msg.get("content", "")
             messages.append({"role": role, "content": content})
 
+    user_content = "Create a project plan in JSON format for the following request: \n\n" + prompt
+    
+    if current_state:
+        user_content += "\n\nCURRENT PROJECT STATE:\n" + current_state + "\n\nModify or add to this current state based on the request."
+        
+    user_content += (
+        "\n\nRespond with ONLY a valid JSON object using this format:\n"
+        '{"title": "...", "description": "...", "tasks": [{"title": "...", "description": "...", "status": "NOT_STARTED", "priority": "MEDIUM", "estimated_hours": 5, "depends_on": []}]}'
+    )
+
     messages.append({
         "role": "user",
-        "content": (
-            "Create a project plan in JSON format for the following request: \n\n" + prompt +
-            "\n\nRespond with ONLY a valid JSON object using this format:\n"
-            '{"title": "...", "description": "...", "tasks": [{"title": "...", "description": "...", "status": "NOT_STARTED", "priority": "MEDIUM", "estimated_hours": 5, "depends_on": []}]}'
-        ),
+        "content": user_content,
     })
 
     payload = {
@@ -338,6 +344,7 @@ async def generate_project(
     current_user = Depends(get_current_user),
 ):
     existing_project = None
+    current_state_str = None
     if request.project_id:
         result = await db.execute(select(Project).where(Project.id == request.project_id))
         existing_project = result.scalar_one_or_none()
@@ -345,10 +352,35 @@ async def generate_project(
             raise HTTPException(status_code=404, detail="Project not found")
         if existing_project.created_by != current_user.id:
             raise HTTPException(status_code=403, detail="Not authorized")
+            
+        # Fetch tasks to provide current context to the AI
+        from app.models import Task
+        task_result = await db.execute(
+            select(Task).where(Task.project_id == existing_project.id).options(selectinload(Task.dependencies))
+        )
+        existing_tasks = task_result.scalars().unique().all()
+        
+        current_state_json = {
+            "title": existing_project.title,
+            "description": existing_project.description,
+            "tasks": [
+                {
+                    "title": t.title,
+                    "description": t.description,
+                    "status": str(t.status.value if hasattr(t.status, "value") else t.status),
+                    "priority": str(t.priority.value if hasattr(t.priority, "value") else t.priority),
+                    "estimated_hours": t.estimated_hours,
+                    "depends_on": [d.title for d in t.dependencies]
+                }
+                for t in existing_tasks
+            ]
+        }
+        import json
+        current_state_str = json.dumps(current_state_json)
 
     try:
         if settings.GROQ_API_KEY:
-            raw_schema = await _call_groq_api(request.prompt, request.history)
+            raw_schema = await _call_groq_api(request.prompt, request.history, current_state=current_state_str)
         else:
             raw_schema = _default_schema(request.prompt)
     except Exception as exc:
